@@ -16,10 +16,13 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/user/login", {
-        gmail,
-        password,
-      });
+      const response = await axios.post(
+        "https://blog-post-app-mqxb.onrender.com/user/login",
+        {
+          gmail,
+          password,
+        }
+      );
       // Handle success (e.g., store token, redirect, etc.)
       const accessToken = response.data;
       localStorage.setItem("token", accessToken.access_token);

@@ -28,7 +28,7 @@ export default function NewPostForm() {
       }
       // Send POST request to your API to create a new post
       const response = await axios.post(
-        "http://localhost:5000/post/newpost",
+        "https://blog-post-app-mqxb.onrender.com/post/newpost",
         postData,
         {
           headers: {

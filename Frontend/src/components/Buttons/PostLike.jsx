@@ -20,7 +20,9 @@ export default function PostLike({ post_ID, iconSize }) {
     //   return;
     // }
     try {
-      const response = await axios.get(`http://localhost:5000/post/${post_ID}`);
+      const response = await axios.get(
+        `https://blog-post-app-mqxb.onrender.com/post/${post_ID}`
+      );
       setPostCreatorName(response.data[0].postCreator.userName);
       setLikes(response.data[0].likes);
       setIsLoading(true);
@@ -48,7 +50,9 @@ export default function PostLike({ post_ID, iconSize }) {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:5000/post/${post_ID}`);
+      const response = await axios.get(
+        `https://blog-post-app-mqxb.onrender.com/post/${post_ID}`
+      );
       setLikes(response.data[0].likes);
       setLiked(
         response.data[0].likes.some((like) => like.user === authorizUser)
@@ -72,7 +76,7 @@ export default function PostLike({ post_ID, iconSize }) {
       let response;
       if (liked) {
         response = await axios.put(
-          `http://localhost:5000/post/unlike/${post_ID}`,
+          `https://blog-post-app-mqxb.onrender.com/post/unlike/${post_ID}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -80,7 +84,7 @@ export default function PostLike({ post_ID, iconSize }) {
         toast.success(`You unlike ${psotCreatorName}'s A post.`);
       } else {
         response = await axios.put(
-          `http://localhost:5000/post/like/${post_ID}`,
+          `https://blog-post-app-mqxb.onrender.com/post/like/${post_ID}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

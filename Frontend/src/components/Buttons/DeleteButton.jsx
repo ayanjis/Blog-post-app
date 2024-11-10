@@ -49,7 +49,9 @@ export default function DeletePost(props) {
     }
 
     try {
-      const response = await axios.get(`http://localhost:5000/post/${postID}`);
+      const response = await axios.get(
+        `https://blog-post-app-mqxb.onrender.com/post/${postID}`
+      );
       const postCreatorId = response.data[0].postCreator._id;
       console.log([postCreatorId]);
 
@@ -60,11 +62,14 @@ export default function DeletePost(props) {
       }
 
       // Proceed with the deletion request if authorized
-      await axios.delete(`http://localhost:5000/post/deletepost/${postID}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.delete(
+        `https://blog-post-app-mqxb.onrender.com/post/deletepost/${postID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       toast.success("Post deleted successfully.", {
         duration: 2000,

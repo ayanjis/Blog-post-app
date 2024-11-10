@@ -13,7 +13,7 @@ export default function PostRactsPage() {
     setIsLoading(true);
     try {
       const postRespose = await axios.get(
-        `http://localhost:5000/post/reactInfo/${params.id}`
+        `https://blog-post-app-mqxb.onrender.com/post/reactInfo/${params.id}`
       );
       setReactorIds(postRespose.data.likes);
 

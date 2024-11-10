@@ -16,7 +16,7 @@ export default function OnePost() {
     setIsLoading(true);
     try {
       const postRespose = await axios.get(
-        `http://localhost:5000/post/${params.id}`
+        `https://blog-post-app-mqxb.onrender.com/post/${params.id}`
       );
       setPost(postRespose.data[0]);
       setCreator(postRespose.data[0].postCreator);

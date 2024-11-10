@@ -16,7 +16,7 @@ export default function ShareButton({ post_ID }) {
 
   const handleCopy = () => {
     // Select and copy the text to the clipboard
-    const textToCopy = `http://localhost:5173/post/${post_ID}`;
+    const textToCopy = `https://blog-post-app-mqxb.onrender.com/post/${post_ID}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       setIsCopied(true);
     });
@@ -72,7 +72,7 @@ export default function ShareButton({ post_ID }) {
           <input
             type="text"
             readOnly
-            value={`http://localhost:5173/post/${post_ID}`}
+            value={`https://blog-post-app-mqxb.onrender.com/post/${post_ID}`}
             className="w-full p-2 text-gray-900 bg-gray-100 rounded dark:bg-[#7d017d99] dark:text-white"
           />
           <button
