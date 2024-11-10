@@ -17,7 +17,9 @@ export default function Dashboard() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const respose = await axios.get("http://localhost:5000/post");
+      const respose = await axios.get(
+        "https://blog-post-app-mqxb.onrender.com/post"
+      );
       setPosts(respose.data);
       // console.log("dash", posts);
     } catch (error) {
