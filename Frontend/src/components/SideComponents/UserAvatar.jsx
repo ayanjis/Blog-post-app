@@ -29,7 +29,7 @@ export default function UserAvatar() {
 
     // Make a request to the profile API with the token
     axios
-      .get("https://blog-post-app-mqxb.onrender.com/user/myprofile", {
+      .get("http://localhost:5000/user/myprofile", {
         headers: {
           Authorization: `Bearer ${token}`, // Add the token in the Authorization header
         },

@@ -21,7 +21,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "https://blog-post-app-mqxb.onrender.com/user/signup",
+        "http://localhost:5000/user/signup",
         {
           avatar,
           userName,

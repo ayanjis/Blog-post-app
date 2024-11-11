@@ -17,7 +17,7 @@ const UpdateUserForm = () => {
   useEffect(() => {
     // Fetch current user data
     axios
-      .get("https://blog-post-app-mqxb.onrender.com/user/myprofile", {
+      .get("http://localhost:5000/user/myprofile", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
@@ -61,16 +61,12 @@ const UpdateUserForm = () => {
     if (avatar) formData.append("avatar", avatar); // Add new avatar if selected
 
     try {
-      await axios.put(
-        "https://blog-post-app-mqxb.onrender.com/user/update",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await axios.put("/user/update", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       localStorage.removeItem("token");
       navigate("/user/login");
       toast.success("Profile updated successfully!");

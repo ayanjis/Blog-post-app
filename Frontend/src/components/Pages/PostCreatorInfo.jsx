@@ -21,7 +21,7 @@ export default function PostCreatorInfo() {
     setIsLoading(true);
     try {
       const respose = await axios.get(
-        `https://blog-post-app-mqxb.onrender.com/user/userinfo/${params.id}`
+        `http://localhost:5000/user/userinfo/${params.id}`
       );
       setCreator(respose.data[0]);
       // setPostImage(creator.posts[0].postImage);

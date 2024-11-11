@@ -23,7 +23,7 @@ export default function UpdatePostForm() {
     const fetchPost = async () => {
       try {
         const response = await axios.get(
-          `https://blog-post-app-mqxb.onrender.com/post/${params.id}`
+          `http://localhost:5000/post/${params.id}`
         );
         setPost(response.data[0]); // Pre-populate the form with existing post data
         setPostCreatorId(response.data[0].postCreator._id);
@@ -95,7 +95,7 @@ export default function UpdatePostForm() {
 
     try {
       await axios.put(
-        `https://blog-post-app-mqxb.onrender.com/post/updatepost/${params.id}`,
+        `http://localhost:5000/post/updatepost/${params.id}`,
         post,
         {
           headers: {
