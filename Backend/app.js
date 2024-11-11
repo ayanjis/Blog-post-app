@@ -8,10 +8,11 @@ import { connectDB } from "./connectDb.js";
 import userRoute from "./routes/userRoute.js";
 import postRoute from "./routes/postRoute.js";
 import path from "path";
+import { app, server } from "./socket/socket.js";
 
 const __dirname = path.resolve()
 
-const app = express();
+// const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use('/uploads', express.static('uploads'))
@@ -46,7 +47,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT;
 connectDB()
 	.then(() => {
-		app.listen(PORT, () => {
+		server.listen(PORT, () => {
 			console.log(`App listning at PORT: ${PORT}!`);
 		});
 	})
