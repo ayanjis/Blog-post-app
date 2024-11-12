@@ -1,67 +1,68 @@
 import fs from "fs";
 import path from "path";
-import { v2 as cloudinary } from "cloudinary";  // Import cloudinary directly
+import { v2 as cloudinary } from "cloudinary"; // Import cloudinary directly
 
 // Internal imports.
 import { Post } from "../models/Post.model.js";
 import { User } from "../models/User.model.js";
 import { title } from "process";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { getReciverSocketId } from "../socket/socket.js";
 
 // Create A new post.
 export const newPost = async (req, res, next) => {
-	const userId = req.userId;
-	try {
-		if (!req.file) {
-			return res.status(400).json({ message: "File upload failed." });
-		}
+  const userId = req.userId;
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "File upload failed." });
+    }
 
-		const postImagePath = req.file.path
-		const postImage = await uploadOnCloudinary(postImagePath)
+    const postImagePath = req.file.path;
+    const postImage = await uploadOnCloudinary(postImagePath);
 
-		const newPost = Post({
-			...req.body,
-			// postImage: req.file.filename,
-			postImage: postImage?.url || "",
-			postCreator: userId,
-		});
-		// console.log("CANP path", newPost);
-		const post = await newPost.save();
-		await User.updateOne({ _id: userId }, { $push: { posts: post._id } });
-		res.status(200).json({ message: "Your post is created Successful!" });
-	} catch (err) {
-		console.log(err);
-		res.status(500).json({ message: "Post creation Failed!" });
-	}
+    const newPost = Post({
+      ...req.body,
+      // postImage: req.file.filename,
+      postImage: postImage?.url || "",
+      postCreator: userId,
+    });
+    // console.log("CANP path", newPost);
+    const post = await newPost.save();
+    await User.updateOne({ _id: userId }, { $push: { posts: post._id } });
+    res.status(200).json({ message: "Your post is created Successful!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Post creation Failed!" });
+  }
 };
 
 // Get all posts.
 export const getAllPosts = async (req, res, next) => {
-	try {
-		const posts = await Post.find()
-			.populate("postCreator", "userName gmail avatar _id likes")
-			.select({ __v: 0 })
-			.sort({ updatedAt: -1 });
-		// console.log(posts)
-		res.status(200).json(posts);
-	} catch (err) {
-		next(err);
-	}
+  try {
+    const posts = await Post.find()
+      .populate("postCreator", "userName gmail avatar _id likes")
+      .select({ __v: 0 })
+      .sort({ updatedAt: -1 });
+    // console.log(posts)
+    res.status(200).json(posts);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // Get A single post.
 export const getSinglePost = async (req, res, next) => {
-	try {
-		const { id } = req.params;
-		const foundPost = await Post.find({ _id: id }).populate(
-			"postCreator",
-			"userName gmail _id",
-		);
-		// .select({ __v: 1});
-		res.status(200).json(foundPost);
-	} catch (err) {
-		next(err);
-	}
+  try {
+    const { id } = req.params;
+    const foundPost = await Post.find({ _id: id }).populate(
+      "postCreator",
+      "userName gmail _id"
+    );
+    // .select({ __v: 1});
+    res.status(200).json(foundPost);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // // Update single post with conditional image replacement
@@ -88,7 +89,7 @@ export const updatePost = async (req, res, next) => {
     if (req.file) {
       // Remove old image from Cloudinary if it exists
       if (post.postImage) {
-        const publicId = post.postImage.split('/').pop().split('.')[0];
+        const publicId = post.postImage.split("/").pop().split(".")[0];
         await cloudinary.uploader.destroy(publicId);
       }
 
@@ -110,14 +111,15 @@ export const updatePost = async (req, res, next) => {
       runValidators: true,
     });
 
-    res.status(200).json({ message: "Post has been updated", post: updatedPost });
+    res
+      .status(200)
+      .json({ message: "Post has been updated", post: updatedPost });
   } catch (err) {
     console.error("Error updating post:", err);
     next(err);
     res.status(500).json({ message: "Failed to update post" });
   }
 };
-
 
 // // Delete a post along with its image
 export const deletePost = async (req, res, next) => {
@@ -137,8 +139,8 @@ export const deletePost = async (req, res, next) => {
 
     // Delete the image on Cloudinary if it exists
     if (post.postImage) {
-      const publicId = post.postImage.split('/').pop().split('.')[0];
-      await cloudinary.uploader.destroy(publicId);  // Delete the image on Cloudinary
+      const publicId = post.postImage.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(publicId); // Delete the image on Cloudinary
     }
 
     // Delete the post document from the database
@@ -161,52 +163,100 @@ export const deletePost = async (req, res, next) => {
   }
 };
 
+// Like a post
+// export const likePost = async (req, res) => {
+//   try {
+//     const loggedInUserId = req.userId;
+//     const { id } = req.params;
+//     const postCreator_Id = await Post.findById(id).populate("postCreator");
 
+//     const updatedPost = await Post.findByIdAndUpdate(
+//       id,
+//       {
+//         $push: {
+//           likes: { user: loggedInUserId, postCreatorId: postCreator_Id },
+//         },
+//       },
+//       { new: true, runValidators: true, context: "query", timestamps: false }
+//     );
+
+//     if (!updatedPost) {
+//       return res.status(404).json({ message: "Post not found" });
+//     }
+
+//     // Socket IO functionality here
+//     const reciverSocketId = getReciverSocketId(postCreator_Id);
+//     if (reciverSocketId) {
+//       io.to(reciverSocketId).emit("newLike", postCreator_Id);
+//     }
+
+//     res.status(200).json(updatedPost.likes);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 // Like a post
 export const likePost = async (req, res) => {
-	try {
-		const loggedInUserId = req.userId;
-		const { id } = req.params;
+  try {
+    const loggedInUserId = req.userId; // The user who liked the post
+    const { id } = req.params;
+    const post = await Post.findById(id).populate("postCreator");
 
-		const updatedPost = await Post.findByIdAndUpdate(
-			id,
-			{ $push: { likes: { user: loggedInUserId } } },
-			{ new: true, runValidators: true, context: "query", timestamps: false },
-		);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-		if (!updatedPost) {
-			return res.status(404).json({ message: "Post not found" });
-		}
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          likes: { user: loggedInUserId, postCreatorId: post.postCreator._id },
+        },
+      },
+      { new: true, runValidators: true, context: "query", timestamps: false }
+    );
 
-		res.status(200).json(updatedPost.likes);
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Server error" });
-	}
+    // Emit notification to the post creator
+    const receiverSocketId = getReciverSocketId(post.postCreator._id);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newLike", {
+        likerId: loggedInUserId,
+        postId: id,
+        postCreator: post.postCreator._id,
+      });
+    }
+
+    res.status(200).json(updatedPost.likes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
 
 // Unlike a post
 export const unlikePost = async (req, res) => {
-	try {
-		const loggedInUserId = req.userId;
-		const { id } = req.params;
+  try {
+    const loggedInUserId = req.userId;
+    const { id } = req.params;
 
-		const updatedPost = await Post.findByIdAndUpdate(
-			id,
-			{ $pull: { likes: { user: loggedInUserId } } },
-			{ new: true, runValidators: true, context: "query", timestamps: false },
-		);
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      { $pull: { likes: { user: loggedInUserId } } },
+      { new: true, runValidators: true, context: "query", timestamps: false }
+    );
 
-		if (!updatedPost) {
-			return res.status(404).json({ message: "Post not found" });
-		}
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-		res.status(200).json(updatedPost.likes);
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Server error" });
-	}
+    res.status(200).json(updatedPost.likes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 // // Post React Info.

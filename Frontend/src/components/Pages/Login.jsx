@@ -25,6 +25,7 @@ export default function Login() {
       localStorage.setItem("token", accessToken.access_token);
       // console.log("Response:", accessToken.access_token);
       navigate("/user/myprofile");
+      window.location.reload(); // Reload the page after navigation
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Something went wrong");

@@ -193,6 +193,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update online status whenever onlineUsers or posts change
@@ -243,10 +244,21 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       {post.postCreator.avatar && (
-                        <img
-                          src={`${post.postCreator.avatar}`}
-                          className="w-[1.7rem] h-[1.7rem]"
-                        />
+                        <span
+                          className={`w-full h-full p-[3px] bg-gray-500 rounded-full relative
+                        before:content-[''] before:absolute before:top-0 before:right-0 before:w-2 before:h-2 before:rounded-full
+                        after:content-[''] after:absolute after:top-0 after:right-0 after:w-2 after:h-2 after:rounded-full 
+                        ${
+                          onlineStatus[post.postCreator._id]
+                            ? "before:bg-[#00ff5e] after:bg-[#00ff5e] after:animate-ping "
+                            : ""
+                        }`}
+                        >
+                          <img
+                            src={`${post.postCreator.avatar}`}
+                            className="w-[1.8rem] h-[1.8rem]"
+                          />
+                        </span>
                       )}
                       <div className="text-start font-bold">
                         <p className="text-white">
@@ -254,11 +266,6 @@ export default function Dashboard() {
                         </p>
                         <p>{post.postCreator.gmail}</p>
                       </div>
-                      <p className="text-green-300 text-[20px]">
-                        {onlineStatus[post.postCreator._id]
-                          ? "online"
-                          : "offline"}
-                      </p>
                     </div>
                   </NavLink>
                   <ShareButton post_ID={post._id} />

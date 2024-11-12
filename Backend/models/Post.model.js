@@ -22,6 +22,12 @@ const postSchema = mongoose.Schema(
           type: mongoose.Types.ObjectId,
           ref: "User",
         },
+        
+        postCreatorId: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+        },
+
         createdAt: {
           type: Date,
           default: Date.now, // Automatically set createdAt to the current date and time

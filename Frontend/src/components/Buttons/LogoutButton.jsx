@@ -9,6 +9,7 @@ export default function LogoutButton() {
 
     // Redirect to login or home page after logout
     navigate("/user/login"); // Change to '/home' if you want to redirect to home page
+    window.location.reload(); // Reload the page after navigation
   };
 
   return (
