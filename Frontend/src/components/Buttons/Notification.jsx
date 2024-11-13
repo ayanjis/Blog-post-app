@@ -62,10 +62,16 @@
 
 import { useState } from "react";
 import useLikeListener from "../../hooks/useLikeListener.js";
+import { NavLink } from "react-router-dom";
 
 export default function Notification() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { notifications } = useLikeListener();
+
+  if (!notifications) {
+    return null;
+  }
+
   console.log(notifications);
 
   const toggleDropdown = () => {
@@ -78,7 +84,7 @@ export default function Notification() {
       <button
         id="dropdownUsersButton"
         onClick={toggleDropdown}
-        className="size-4 fill-purple-600 cursor-pointer transition ease-in-out hover:scale-[1.5] max-[425px]:active:scale-[1.5]"
+        className="size-4 cursor-pointer transition ease-in-out hover:scale-[1.5] max-[425px]:active:scale-[1.5]"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +92,7 @@ export default function Notification() {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="size-4"
+          className="size-4 stroke-red-500 animate-shake"
         >
           <path
             strokeLinecap="round"
@@ -100,24 +106,43 @@ export default function Notification() {
       {isDropdownOpen && (
         <div
           id="dropdownUsers"
-          className="z-10 absolute right-0 bg-white rounded-lg shadow w-60 dark:bg-gray-700 m-2"
+          className="z-10 items-center justify-center absolute right-0 bg-white rounded-lg shadow w-40 dark:bg-gray-700 m-2"
         >
           <ul
-            className="py-2 overflow-y-auto text-gray-700 dark:text-gray-200"
+            className="divide-y w-fit py-2 overflow-y-auto text-gray-700 dark:text-gray-200 flax items-center justify-center"
             aria-labelledby="dropdownUsersButton"
           >
             {notifications.length > 0 ? (
-              notifications.map((note, index) => (
+              notifications.map((notification, index) => (
                 <li
                   key={index}
-                  className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="flex w-full items-center justify-center py-2"
                 >
-                  {/* <img
-                    className="w-6 h-6 mr-2 rounded-full"
-                    src={`/path/to/avatar/of/user/${note.likerId}`} // Update with actual avatar URL if available
-                    alt="User avatar"
-                  /> */}
-                  <span>User {note.likerId} liked your post!</span>
+                  {notification ? (
+                    <>
+                      {notification.likerId && (
+                        <NavLink to={`/user/userinfo/${notification.likerId}`}>
+                          <img
+                            className="w-6 h-6 mr-2 rounded-full"
+                            src={`${notification.likerAvatar.avatar}`}
+                            alt="User avatar"
+                          />
+                        </NavLink>
+                      )}
+                      {notification.likerName && notification.postId ? (
+                        <NavLink
+                          to={`/post/${notification.postId}`}
+                          className=" text-teal-300 text-[10px] font-normal"
+                        >
+                          {`${notification.likerName} liked your post!`}
+                        </NavLink>
+                      ) : (
+                        <span>No notification details</span>
+                      )}
+                    </>
+                  ) : (
+                    <span>No notifications</span>
+                  )}
                 </li>
               ))
             ) : (

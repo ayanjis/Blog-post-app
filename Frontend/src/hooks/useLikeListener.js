@@ -4,21 +4,25 @@ import { useSocketContext } from '../context/socketContext';
 export default function useLikeListener() {
   const { socket } = useSocketContext();
   const [notifications, setNotifications] = useState([]);
+  console.log(notifications);
 
   useEffect(() => {
-    // const handleNewLike = (likeData) => {
-     
-    // };
+    if (!socket) return;
 
-    socket?.on('newLike',  (newLike) => {
-            setNotifications([...notifications, newLike])
-          });
+    const handleNewLike = (notification) => {
+      setNotifications((prevNotifications) =>
+        prevNotifications.includes(notification) ? prevNotifications : [...prevNotifications, notification]
+      );
+    };
 
-    return () => socket?.off('newLike', notifications);
+    socket.on('newLike', handleNewLike);
+
+    return () => socket.off('newLike', handleNewLike);
   }, [socket]);
 
-  return { notifications }; // Ensure this returns an object containing notifications
+  return { notifications };
 }
+
 
 
 

@@ -7,7 +7,7 @@ import { Post } from "../models/Post.model.js";
 import { User } from "../models/User.model.js";
 import { title } from "process";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { getReciverSocketId } from "../socket/socket.js";
+import { getReciverSocketId, io} from "../socket/socket.js";
 
 // Create A new post.
 export const newPost = async (req, res, next) => {
@@ -218,15 +218,19 @@ export const likePost = async (req, res) => {
       { new: true, runValidators: true, context: "query", timestamps: false }
     );
 
+    const likerImage = await User.findById(loggedInUserId).select("avatar");
+
     // Emit notification to the post creator
     const receiverSocketId = getReciverSocketId(post.postCreator._id);
     if (receiverSocketId) {
       io.to(receiverSocketId).emit("newLike", {
         likerId: loggedInUserId,
+        likerName: req.name,
+        likerAvatar: likerImage,
         postId: id,
-        postCreator: post.postCreator._id,
       });
     }
+    
 
     res.status(200).json(updatedPost.likes);
   } catch (error) {
