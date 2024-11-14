@@ -67,7 +67,7 @@ const UserInfoDropdown = () => {
 
   return (
     <div className="relative inline-block">
-      <div className="flex items-center">
+      <div className="flex gap-9 items-center">
         <Notification userId={userId} />
 
         <button

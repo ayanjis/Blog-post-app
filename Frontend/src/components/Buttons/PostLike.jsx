@@ -23,9 +23,7 @@ export default function PostLike({ post_ID, iconSize }) {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        `https://blog-post-app-mqxb.onrender.com/post/${post_ID}`
-      );
+      const response = await axios.get(`http://localhost:5000/post/${post_ID}`);
       const { postCreator, likes } = response.data[0];
       setPostCreatorName(postCreator?.userName || "User");
       setLikes(likes || []);

@@ -228,6 +228,7 @@ export const likePost = async (req, res) => {
         likerName: req.name,
         likerAvatar: likerImage,
         postId: id,
+        seen: false, // Initial seen status as false
       });
     }
     

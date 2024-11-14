@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 
-const SocketContext = createContext();
+export const SocketContext = createContext();
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useSocketContext = () => {
@@ -13,6 +13,7 @@ export const useSocketContext = () => {
 export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]); // add notifications state here
 
   const token = localStorage.getItem("token");
   let decodedToken = null;
@@ -53,7 +54,9 @@ export const SocketContextProvider = ({ children }) => {
   }, [token, authorizUser_id]);
 
   return (
-    <SocketContext.Provider value={{ socket, onlineUsers }}>
+    <SocketContext.Provider
+      value={{ socket, onlineUsers, notifications, setNotifications }}
+    >
       {children}
     </SocketContext.Provider>
   );
@@ -66,6 +69,7 @@ export const SocketContextProvider = ({ children }) => {
 
 // const SocketContext = createContext();
 
+// // eslint-disable-next-line react-refresh/only-export-components
 // export const useSocketContext = () => {
 //   return useContext(SocketContext);
 // };
@@ -75,11 +79,19 @@ export const SocketContextProvider = ({ children }) => {
 //   const [onlineUsers, setOnlineUsers] = useState([]);
 
 //   const token = localStorage.getItem("token");
-//   const decodedToken = jwtDecode(token);
-//   const authorizUser_id = decodedToken.userId;
+//   let decodedToken = null;
+//   let authorizUser_id = null;
+//   if (token) {
+//     try {
+//       decodedToken = jwtDecode(token);
+//       authorizUser_id = decodedToken.userId;
+//     } catch (error) {
+//       console.error("Error decoding token:", error);
+//     }
+//   }
 
 //   useEffect(() => {
-//     if (token) {
+//     if (token && authorizUser_id) {
 //       const socket = io("http://localhost:5000", {
 //         query: { userId: authorizUser_id },
 //       });
@@ -90,7 +102,10 @@ export const SocketContextProvider = ({ children }) => {
 //       });
 
 //       return () => {
-//         socket.close();
+//         if (socket) {
+//           socket.close();
+//           setSocket(null);
+//         }
 //       };
 //     } else {
 //       if (socket) {
@@ -98,7 +113,8 @@ export const SocketContextProvider = ({ children }) => {
 //         setSocket(null);
 //       }
 //     }
-//   }, []);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [token, authorizUser_id]);
 
 //   return (
 //     <SocketContext.Provider value={{ socket, onlineUsers }}>
