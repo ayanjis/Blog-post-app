@@ -31,10 +31,36 @@ export const newPost = async (req, res, next) => {
     await User.updateOne({ _id: userId }, { $push: { posts: post._id } });
     res.status(200).json({ message: "Your post is created Successful!" });
   } catch (err) {
-    console.log(err);
+    console.log("hello",err);
     res.status(500).json({ message: "Post creation Failed!" });
   }
 };
+
+// export const newPost = async (req, res, next) => {
+//   const userId = req.userId;
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ message: "File upload failed." });
+//     }
+
+//     const postImagePath = req.file.path;
+//     const postImage = await uploadOnCloudinary(postImagePath);
+
+//     const newPost = Post({
+//       ...req.body,
+//       // postImage: req.file.filename,
+//       postImage: postImage?.url || "",
+//       postCreator: userId,
+//     });
+//     // console.log("CANP path", newPost);
+//     const post = await newPost.save();
+//     await User.updateOne({ _id: userId }, { $push: { posts: post._id } });
+//     res.status(200).json({ message: "Your post is created Successful!" });
+//   } catch (err) {
+//     console.log("hello",err);
+//     res.status(500).json({ message: "Post creation Failed!" });
+//   }
+// };
 
 // Get all posts.
 export const getAllPosts = async (req, res, next) => {

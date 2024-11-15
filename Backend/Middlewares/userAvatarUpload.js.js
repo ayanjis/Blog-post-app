@@ -3,7 +3,7 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, file, callBack) {
-    callBack(null, "uploads/avatar_images");
+    callBack(null, "Backend/uploads/avatar_images");
   },
   filename: function (req, file, callBack) {
     let ext = path.extname(file.originalname);

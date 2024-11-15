@@ -38,6 +38,7 @@ export default function NewPostForm() {
         }
       );
       console.log("Post created:", response.data);
+      console.log("Post created:", postData);
       // After successful post creation, navigate to another route, e.g., the list of posts or the new post page
       toast.success("Post created successfully.", {
         duration: 2000,
@@ -115,7 +116,7 @@ export default function NewPostForm() {
             className="mt-1 text-sm text-gray-500 dark:text-gray-300"
             id="file_input_help"
           >
-            PNG, JPG or GIF (MAX. 800x400px).
+            PNG, JPG (MAX.SIZE 5MB).
           </p>
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}

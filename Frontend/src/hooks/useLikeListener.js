@@ -5,6 +5,7 @@ export default function useLikeListener() {
   const { socket } = useSocketContext();
   const { notifications, setNotifications } = useContext(SocketContext);
   console.log(notifications);
+  localStorage.setItem('notifications', JSON.stringify(notifications));
 
   useEffect(() => {
     if (!socket) return;

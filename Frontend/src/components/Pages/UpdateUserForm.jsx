@@ -61,7 +61,7 @@ const UpdateUserForm = () => {
     if (avatar) formData.append("avatar", avatar); // Add new avatar if selected
 
     try {
-      await axios.put("/user/update", formData, {
+      await axios.put("http://localhost:5000/user/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
